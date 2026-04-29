@@ -32,7 +32,8 @@ export default function PortalCalc() {
   return (
     <div className='pl-4 py-8'>
       <h1>Coords Calculations</h1>
-      <div>
+      <div className='my-8'>
+        <h2>Choose your current dimension: </h2>
         <button onClick={() => setDimension('Overworld')} className ='p-8 m-8 rounded-sm outline-2 outline-lime-500'>Overworld</button>
         <button onClick={() => setDimension('Nether')} className ='p-8 m-8 rounded-sm outline-2 outline-indigo-500'>Nether</button>
       </div>
