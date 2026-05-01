@@ -30,7 +30,7 @@ export default function PortalCalc() {
   };
 
   return (
-    <div className='pl-4 py-8'>
+    <div className='pl-4 py-8 pt-12'>
       <h1>Coords Calculations</h1>
       <div className='my-8'>
         <h2>Choose your current dimension: </h2>
