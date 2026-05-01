@@ -109,20 +109,20 @@ export default function CraftingRecipes() {
         <label htmlFor='SearchBar' className='mx-4'>Search:</label>
         <input type='text' id='searchInput' name='searchInput' className='bg-white text-black rounded-sm' onChange={(e) => setSearchedItem(e.target.value)}></input>
       </div>
+      <div>
+        {renderTree && (
+          <div>
+            <TreeNode {...renderTree} />
+            <RawMaterialsSummary {...rawMaterials}/>
+          </div>
+        )}
+      </div>
       <div className='p-2 m-2'>
         <ul>
           {filteredSearch.map((item) => (
             <li key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
           ))}
         </ul>
-      </div>
-      <div>
-          {renderTree && (
-            <div>
-              <TreeNode {...renderTree} />
-              <RawMaterialsSummary {...rawMaterials}/>
-            </div>
-          )}
       </div>
     </div>
   );

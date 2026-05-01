@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${minecraftFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col " style={{backgroundImage: "url('/images/minecraftBackground.png')"}}>
         <Header></Header>
         <main>
           {children}
