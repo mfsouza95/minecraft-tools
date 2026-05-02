@@ -6,7 +6,7 @@ import RawMaterialsSummary from './components/RawMaterialsSummary';
 const mcData = minecraftData('1.21.11');
 
 const itemsList = Object.values(mcData.items);
-const filteredItemsList = itemsList.filter((item) => mcData.recipes[item.id]);
+const filteredItemsList = itemsList.filter((item) => mcData.recipes[item.id] && item.name !== 'air');
 
 
 function hasCycle(itemName, ingredientName){
@@ -31,10 +31,6 @@ function calcMaterials (itemName, quantity, visited = new Set()){
   }
 
   let itemRecipe = mcData.recipes[itemId][0];
-
-  if(itemRecipe.ingredients?.length < itemRecipe.result.count){
-    return { name: itemName, quantity, ingredients: [] }
-  }
 
   let recipeCount = itemRecipe.result.count;
   let timesCraft = Math.ceil(quantity / recipeCount);
@@ -99,30 +95,33 @@ export default function CraftingRecipes() {
 
   return (
     <div className='pt-12'>
-      <h1>Crafting</h1>
-      <div className='p-4 m-4'>
-        <label htmlFor='Quantity' className='mx-4'>Quantity</label>
-        <input type='number' id='blockQuantity' name='blockQuantity' className='bg-white text-black' onChange={(e) => setBlockQuantity(Number(e.target.value))}></input>
-        <button className='p-2 m-2' onClick={handleCalculate}>Calculate</button>
-      </div>
-      <div className='pt-6 mt-6 mb-2 pb-2'>
-        <label htmlFor='SearchBar' className='mx-4'>Search:</label>
-        <input type='text' id='searchInput' name='searchInput' className='bg-white text-black rounded-sm' onChange={(e) => setSearchedItem(e.target.value)}></input>
-      </div>
-      <div>
-        {renderTree && (
-          <div>
-            <TreeNode {...renderTree} />
-            <RawMaterialsSummary {...rawMaterials}/>
-          </div>
-        )}
-      </div>
-      <div className='p-2 m-2'>
-        <ul>
-          {filteredSearch.map((item) => (
-            <li key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
-          ))}
-        </ul>
+      <div className="absolute inset-0 bg-black opacity-30 z-[-1]"></div>
+      <div className="relative z-10 py-4">
+        <div className='text-center text-3xl font-bold font-[family-name:var(--font-minecraft)]'>
+          <h1>Crafting</h1>
+        </div>
+        <div className='p-4 m-4 justify-center text-center text-2xl'>
+          <label htmlFor='SearchBar' className='mx-4'>Search:</label>
+          <input type='text' id='searchInput' name='searchInput' className='bg-white text-black rounded-sm' onChange={(e) => setSearchedItem(e.target.value)}></input>
+          <label htmlFor='Quantity' className='mx-4'>Quantity</label>
+          <input type='number' id='blockQuantity' name='blockQuantity' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setBlockQuantity(Number(e.target.value))}></input>
+          <button className='m-2 p-2 bg-white text-black rounded-sm cursor-pointer hover:bg-gray-200 font-[family-name:var(--font-minecraft)]' onClick={handleCalculate}>Calculate</button>
+        </div>
+        <div className='justify-center text-xl mx-auto w-fit'>
+          {renderTree && (
+            <div>
+              <TreeNode {...renderTree} />
+              <RawMaterialsSummary {...rawMaterials}/>
+            </div>
+          )}
+        </div>
+        <div className='p-2 m-2 border-4 rounded-lg w-2/3 mx-auto justify-center drop-shadow-2xl backdrop-blur-xs bg-white/20 h-196 overflow-y-scroll text-xl'>
+          <ul className='grid grid-cols-5 gap-3'>
+            {filteredSearch.map((item) => (
+              <li className='text-white hover:text-indigo-400 cursor-pointer' key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
