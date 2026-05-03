@@ -3,6 +3,7 @@ import { useState } from 'react';
 import TreeNode from './components/TreeNode';
 import minecraftData from 'minecraft-data';
 import RawMaterialsSummary from './components/RawMaterialsSummary';
+
 const mcData = minecraftData('1.21.11');
 
 const itemsList = Object.values(mcData.items);
@@ -89,8 +90,17 @@ export default function CraftingRecipes() {
     const tree = calcMaterials(selectedItem, blockQuantity);
     setRenderTree(tree);
     const raw = isRawMaterial(tree);
-    setRawMaterials(raw);
-    console.log(raw);
+    const rawWithStacks = Object.fromEntries(
+      Object.entries(raw).map(([name, quantity]) => [
+        name,
+        {
+          quantity,
+          stacks: Math.floor(quantity/64),
+          remainder: quantity % 64
+        }
+      ])
+    )
+    setRawMaterials(rawWithStacks);
   }
 
   return (
@@ -100,22 +110,22 @@ export default function CraftingRecipes() {
         <div className='text-center text-3xl font-bold font-[family-name:var(--font-minecraft)]'>
           <h1>Crafting</h1>
         </div>
-        <div className='p-4 m-4 justify-center text-center text-2xl'>
+        <div className='p-4 m-2 justify-center text-center text-2xl'>
           <label htmlFor='SearchBar' className='mx-4'>Search:</label>
           <input type='text' id='searchInput' name='searchInput' className='bg-white text-black rounded-sm' onChange={(e) => setSearchedItem(e.target.value)}></input>
           <label htmlFor='Quantity' className='mx-4'>Quantity</label>
           <input type='number' id='blockQuantity' name='blockQuantity' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setBlockQuantity(Number(e.target.value))}></input>
           <button className='m-2 p-2 bg-white text-black rounded-sm cursor-pointer hover:bg-gray-200 font-[family-name:var(--font-minecraft)]' onClick={handleCalculate}>Calculate</button>
         </div>
-        <div className='justify-center text-xl mx-auto w-fit'>
+        <div>
           {renderTree && (
-            <div>
+            <div className='justify-center text-xl mx-auto w-fit border-4 rounded-lg border-green-600 p-4 bg-green-600/30'>
               <TreeNode {...renderTree} />
               <RawMaterialsSummary {...rawMaterials}/>
             </div>
           )}
         </div>
-        <div className='p-2 m-2 border-4 rounded-lg w-2/3 mx-auto justify-center drop-shadow-2xl backdrop-blur-xs bg-white/20 h-196 overflow-y-scroll text-xl'>
+        <div className='p-2 m-2 border-4 rounded-lg w-2/3 mx-auto justify-center drop-shadow-2xl backdrop-blur-xs bg-white/20 h-152 overflow-y-scroll text-xl'>
           <ul className='grid grid-cols-5 gap-3'>
             {filteredSearch.map((item) => (
               <li className='text-white hover:text-indigo-400 cursor-pointer' key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
