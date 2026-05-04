@@ -1,21 +1,25 @@
 'use client'
 import { useState } from 'react';
 import TreeNode from './components/TreeNode';
-import minecraftData from 'minecraft-data';
+import items from '../../data/1.21.11/items.json';
+import recipes from '../../data/1.21.11/recipes.json';
 import RawMaterialsSummary from './components/RawMaterialsSummary';
 
-const mcData = minecraftData('1.21.11');
+const itemsByName = items.reduce((acc, item) => {
+  acc[item.name] = item
+  return acc
+}, {})
 
-const itemsList = Object.values(mcData.items);
-const filteredItemsList = itemsList.filter((item) => mcData.recipes[item.id] && item.name !== 'air');
+const itemsList = Object.values(items);
+const filteredItemsList = itemsList.filter((item) => recipes[item.id] && item.name !== 'air');
 
 
 function hasCycle(itemName, ingredientName){
-  const ingredientId = mcData.itemsByName[ingredientName]?.id;
-  if(!ingredientId || !mcData.recipes[ingredientId]) return false;
-  const recipe = mcData.recipes[ingredientId][0];
+  const ingredientId = itemsByName[ingredientName]?.id;
+  if(!ingredientId || !recipes[ingredientId]) return false;
+  const recipe = recipes[ingredientId][0];
   const currentIngredients = recipe.inShape ? recipe.inShape.flat(Infinity) : recipe.ingredients || [];
-  const testeResult = currentIngredients.includes(mcData.itemsByName[itemName].id);
+  const testeResult = currentIngredients.includes(itemsByName[itemName].id);
   return testeResult;
 }
 
@@ -25,13 +29,13 @@ function calcMaterials (itemName, quantity, visited = new Set()){
     return {name: itemName, quantity, ingredients:[]}
   }
 
-  let itemId = mcData.itemsByName[itemName].id;
+  let itemId = itemsByName[itemName].id;
 
-  if(!mcData.recipes[itemId]){
+  if(!recipes[itemId]){
     return { name: itemName, quantity: quantity, ingredients: []};
   }
 
-  let itemRecipe = mcData.recipes[itemId][0];
+  let itemRecipe = recipes[itemId][0];
 
   let recipeCount = itemRecipe.result.count;
   let timesCraft = Math.ceil(quantity / recipeCount);
@@ -55,7 +59,7 @@ function calcMaterials (itemName, quantity, visited = new Set()){
   newVisited.add(itemName);
 
   for(const[key, value] of Object.entries(ingredientTotal)){
-    const ingredientName = mcData.items[Number(key)].name;
+    const ingredientName = items[Number(key)].name;
     if(!hasCycle(itemName, ingredientName)){
       const subResult = calcMaterials(ingredientName, value, new Set(newVisited));
       ingredientsTree.push(subResult);
