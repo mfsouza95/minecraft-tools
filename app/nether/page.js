@@ -31,29 +31,34 @@ export default function PortalCalc() {
 
   return (
     <div className='pl-4 py-8 pt-12'>
-      <h1>Coords Calculations</h1>
-      <div className='my-8'>
-        <h2>Choose your current dimension: </h2>
-        <button onClick={() => setDimension('Overworld')} className ='p-8 m-8 rounded-sm outline-2 outline-lime-500'>Overworld</button>
-        <button onClick={() => setDimension('Nether')} className ='p-8 m-8 rounded-sm outline-2 outline-indigo-500'>Nether</button>
-      </div>
-      <div>
-        <label htmlFor='X' className='p-2'>X:</label>
-        <input type='number' id='x' name='X' className='bg-white text-black' onChange={(e) => setCords({...cords, x: Number(e.target.value)})}></input>
-        <label htmlFor='Y' className='p-2'>Y:</label>
-        <input type='number' id='Y' name='Y' className='bg-white text-black' onChange={(e) => setCords({...cords, y: Number(e.target.value)})}></input>
-        <label htmlFor='Z' className='p-2'>Z:</label>
-        <input type='number' id='Z' name='Z' className='bg-white text-black' onChange={(e) => setCords({...cords, z: Number(e.target.value)})}></input>
-      </div>
-      <div className='m-8'>
-        <h1>{dimension === 'Overworld' ? 'Nether' : 'Overworld'} Coords:</h1>
-        <p>X:{resultCords.x}</p>
-        <p>Y:{resultCords.y}</p>
-        <p>Z:{resultCords.z}</p>
-      </div>
-      <div className='pl-4'>
-        <button onClick={() => handleCopy(cordsCopy, 'coords')} className='px-8 mx-8 rounded-sm outline-2 bg-white text-black'>{copyStatus.coords ? 'Copied' : 'Copy Coordinates'}</button>
-        <button onClick={() => handleCopy(tpCopy, 'tp')} className='px-8 mx-8 rounded-sm outline-2 bg-white text-black'>{copyStatus.tp ? 'Copied' : 'Copy /TP command'}</button>
+      <div className="absolute inset-0 bg-black opacity-30 z-[-1]"></div>
+      <div className="relative z-10 py-4 text-center">
+        <h1 className='font-bold text-3xl font-[family-name:var(--font-minecraft)]'>Coords Calculations</h1>
+        <div className='border-4 rounded-lg drop-shadow-lg bg-white/20 my-6 py-6 px-6 w-fit mx-auto'>
+          <div className='my-8 font-semibold'>
+            <h2>Choose your current dimension: </h2>
+            <button onClick={() => setDimension('Overworld')} className ='p-8 m-8 rounded-sm outline-3 outline-lime-500 bg-lime-500/20'>Overworld</button>
+            <button onClick={() => setDimension('Nether')} className ='p-8 m-8 rounded-sm outline-3 outline-indigo-500 bg-indigo-500/20'>Nether</button>
+          </div>
+          <div className='font-semibold'>
+            <label htmlFor='X' className='p-2'>X:</label>
+            <input type='number' id='x' name='X' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setCords({...cords, x: Number(e.target.value)})}></input>
+            <label htmlFor='Y' className='p-2'>Y:</label>
+            <input type='number' id='Y' name='Y' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setCords({...cords, y: Number(e.target.value)})}></input>
+            <label htmlFor='Z' className='p-2'>Z:</label>
+            <input type='number' id='Z' name='Z' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setCords({...cords, z: Number(e.target.value)})}></input>
+          </div>
+          <div className='m-8 font-semibold '>
+            <h1>{dimension === 'Overworld' ? 'Nether' : 'Overworld'} Coords:</h1>
+            <p>X:{resultCords.x}</p>
+            <p>Y:{resultCords.y}</p>
+            <p>Z:{resultCords.z}</p>
+          </div>
+        </div>
+        <div className='pl-4'>
+          <button onClick={() => handleCopy(cordsCopy, 'coords')} className='px-8 mx-8 rounded-sm outline-2 bg-white text-black'>{copyStatus.coords ? 'Copied' : 'Copy Coordinates'}</button>
+          <button onClick={() => handleCopy(tpCopy, 'tp')} className='px-8 mx-8 rounded-sm outline-2 bg-white text-black'>{copyStatus.tp ? 'Copied' : 'Copy /TP command'}</button>
+        </div>
       </div>
     </div>
   );

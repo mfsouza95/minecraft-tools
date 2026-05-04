@@ -106,7 +106,7 @@ export default function CraftingRecipes() {
   return (
     <div className='pt-12'>
       <div className="absolute inset-0 bg-black opacity-30 z-[-1]"></div>
-      <div className="relative z-10 py-4">
+      <div className="relative z-10 py-8">
         <div className='text-center text-3xl font-bold font-[family-name:var(--font-minecraft)]'>
           <h1>Crafting</h1>
         </div>
