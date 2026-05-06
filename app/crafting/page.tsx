@@ -5,6 +5,15 @@ import items from '../../data/1.21.11/items.json';
 import recipes from '../../data/1.21.11/recipes.json';
 import RawMaterialsSummary from './components/RawMaterialsSummary';
 
+interface Recipe {
+  inShape?: number[][];
+  ingredients?:number[];
+  result: {
+    id: number;
+    count: number;
+  }
+}
+
 const itemsByName = items.reduce((acc, item) => {
   acc[item.name] = item
   return acc
@@ -14,13 +23,12 @@ const itemsList = Object.values(items);
 const filteredItemsList = itemsList.filter((item) => recipes[item.id] && item.name !== 'air');
 
 
-function hasCycle(itemName, ingredientName){
-  const ingredientId = itemsByName[ingredientName]?.id;
+function hasCycle(itemName: string, ingredientName: string){
+  const ingredientId: number = itemsByName[ingredientName]?.id;
   if(!ingredientId || !recipes[ingredientId]) return false;
-  const recipe = recipes[ingredientId][0];
-  const currentIngredients = recipe.inShape ? recipe.inShape.flat(Infinity) : recipe.ingredients || [];
-  const testeResult = currentIngredients.includes(itemsByName[itemName].id);
-  return testeResult;
+  const recipe: Recipe = recipes[ingredientId][0];
+  const currentIngredients = (recipe.inShape ? recipe.inShape.flat(Infinity) : recipe.ingredients || []) as number[];
+  return currentIngredients.includes(itemsByName[itemName].id);
 }
 
 function calcMaterials (itemName, quantity, visited = new Set()){
@@ -51,7 +59,7 @@ function calcMaterials (itemName, quantity, visited = new Set()){
   }, {})
 
   for (const [key, value] of Object.entries(ingredientCount)){
-    ingredientTotal[key] = value * timesCraft;
+    ingredientTotal[key] = (value as number) * timesCraft;
   }
 
   let ingredientsTree = [];
@@ -82,7 +90,7 @@ function isRawMaterial(node, result = {}){
 }
 
 export default function CraftingRecipes() {
-  const [selectedItem, setSelectedItem] = useState();
+  const [selectedItem, setSelectedItem] = useState<string>('');
   const [blockQuantity, setBlockQuantity] = useState(0);
   const [renderTree, setRenderTree] = useState(null);
   const [rawMaterials, setRawMaterials] = useState(null);
@@ -98,9 +106,9 @@ export default function CraftingRecipes() {
       Object.entries(raw).map(([name, quantity]) => [
         name,
         {
-          quantity,
-          stacks: Math.floor(quantity/64),
-          remainder: quantity % 64
+          quantity: Number(quantity),
+          stacks: Math.floor(Number(quantity)/64),
+          remainder: Number(quantity) % 64
         }
       ])
     )

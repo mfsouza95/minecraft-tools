@@ -1,4 +1,11 @@
-export default function TreeNode (props){
+interface TreeNodeProps {
+    name: string;
+    quantity: number;
+    ingredients: TreeNodeProps[];
+};
+
+
+export default function TreeNode (props: TreeNodeProps){
 
     return(
         <div className="flex flex-col items-center">
