@@ -16,7 +16,7 @@ export default function PortalCalc() {
   let cordsCopy = `${resultCords.x} ${resultCords.y} ${resultCords.z}`;
   let tpCopy = `/tp ${resultCords.x} ${resultCords.y} ${resultCords.z}`;
 
-  const handleCopy = async(text, type) => {
+  const handleCopy = async(text: string, type: string) => {
     try{
       await navigator.clipboard.writeText(text);
 

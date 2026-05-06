@@ -1,11 +1,6 @@
-interface TreeNodeProps {
-    name: string;
-    quantity: number;
-    ingredients: TreeNodeProps[];
-};
+import { ResultObject } from '../../types';
 
-
-export default function TreeNode (props: TreeNodeProps){
+export default function TreeNode (props: ResultObject){
 
     return(
         <div className="flex flex-col items-center">

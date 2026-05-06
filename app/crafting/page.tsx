@@ -4,6 +4,8 @@ import TreeNode from './components/TreeNode';
 import items from '../../data/1.21.11/items.json';
 import recipes from '../../data/1.21.11/recipes.json';
 import RawMaterialsSummary from './components/RawMaterialsSummary';
+import { ResultObject } from '../types';
+import { ResultRaw } from '../types';
 
 interface Recipe {
   inShape?: number[][];
@@ -14,7 +16,18 @@ interface Recipe {
   }
 }
 
-const itemsByName = items.reduce((acc, item) => {
+interface MinecraftItem {
+  id: number;
+  name: string;
+  displayName: string;
+  stackSize: number;
+}
+
+interface ItemsByName {
+  [key: string]: MinecraftItem;
+}
+
+const itemsByName: ItemsByName = items.reduce<ItemsByName>((acc, item) => {
   acc[item.name] = item
   return acc
 }, {})
@@ -31,25 +44,25 @@ function hasCycle(itemName: string, ingredientName: string){
   return currentIngredients.includes(itemsByName[itemName].id);
 }
 
-function calcMaterials (itemName, quantity, visited = new Set()){
+function calcMaterials (itemName: string, quantity: number, visited = new Set<string>()){
 
   if (visited.has(itemName)){
     return {name: itemName, quantity, ingredients:[]}
   }
 
-  let itemId = itemsByName[itemName].id;
+  let itemId: number = itemsByName[itemName].id;
 
   if(!recipes[itemId]){
     return { name: itemName, quantity: quantity, ingredients: []};
   }
 
-  let itemRecipe = recipes[itemId][0];
-
-  let recipeCount = itemRecipe.result.count;
+  let itemRecipe: Recipe = recipes[itemId][0];
+  let recipeCount: number = itemRecipe.result.count;
   let timesCraft = Math.ceil(quantity / recipeCount);
-  let ingredientTotal = {};
+  let ingredientTotal:Record<number, number> = {};
 
-  let rawIngredients = itemRecipe.inShape ? itemRecipe.inShape.flat(Infinity) : itemRecipe.ingredients;
+
+  let rawIngredients = (itemRecipe.inShape ? itemRecipe.inShape.flat(Infinity) : itemRecipe.ingredients) as number[];
 
   let ingredients = rawIngredients.filter((value) => value !== 0 && value !== null);
 
@@ -62,14 +75,14 @@ function calcMaterials (itemName, quantity, visited = new Set()){
     ingredientTotal[key] = (value as number) * timesCraft;
   }
 
-  let ingredientsTree = [];
+  let ingredientsTree: ResultObject[] = [];
   const newVisited = new Set(visited);
   newVisited.add(itemName);
 
   for(const[key, value] of Object.entries(ingredientTotal)){
     const ingredientName = items[Number(key)].name;
     if(!hasCycle(itemName, ingredientName)){
-      const subResult = calcMaterials(ingredientName, value, new Set(newVisited));
+      const subResult = calcMaterials(ingredientName, Number(value), new Set(newVisited));
       ingredientsTree.push(subResult);
     }
   }
@@ -78,12 +91,13 @@ function calcMaterials (itemName, quantity, visited = new Set()){
   return finalTree; 
 }
 
-function isRawMaterial(node, result = {}){
+function isRawMaterial(node: ResultObject, result:Record<string, number> = {}){
   if (node.ingredients.length === 0){
     result[node.name] = (result[node.name] ?? 0) + node.quantity;
   } else {
     for (const ingredientRecipe of node.ingredients){
       isRawMaterial(ingredientRecipe, result);
+      console.log(result);
     }
   }
   return result;
@@ -92,8 +106,8 @@ function isRawMaterial(node, result = {}){
 export default function CraftingRecipes() {
   const [selectedItem, setSelectedItem] = useState<string>('');
   const [blockQuantity, setBlockQuantity] = useState(0);
-  const [renderTree, setRenderTree] = useState(null);
-  const [rawMaterials, setRawMaterials] = useState(null);
+  const [renderTree, setRenderTree] = useState<ResultObject | null>(null);
+  const [rawMaterials, setRawMaterials] = useState<ResultRaw | null>(null);
   const [searchedItem, setSearchedItem] = useState('');
 
   const filteredSearch = filteredItemsList.filter((item) => item.displayName.toLowerCase().includes(searchedItem.toLowerCase()));
