@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import TreeNode from './components/TreeNode';
 import items from '../../data/1.21.11/items.json';
 import recipes from '../../data/1.21.11/recipes.json';
@@ -130,9 +131,14 @@ export default function CraftingRecipes() {
   }
 
   return (
-    <div className='pt-12'>
+    <div className='pt-12 text-white'>
       <div className="absolute inset-0 bg-black opacity-30 z-[-1]"></div>
-      <div className="relative z-10 py-8">
+      <motion.div 
+      initial = {{ opacity: 0, y: 50 }}
+      animate = {{ opacity: 1, y: 0 }} 
+      // transition={{ duration: 0.5, ease:'easeOut' }}
+      transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+      className="relative z-10 py-8">
         <div className='text-center text-3xl font-bold font-[family-name:var(--font-minecraft)]'>
           <h1>Crafting</h1>
         </div>
@@ -158,7 +164,7 @@ export default function CraftingRecipes() {
             ))}
           </ul>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
