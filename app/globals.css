@@ -34,5 +34,6 @@ body {
 }
 
 .no-arrows {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
