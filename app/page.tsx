@@ -11,7 +11,7 @@ export default function Home() {
         initial = {{ opacity: 0, y: 50 }}
         animate = {{ opacity: 1, y: 0 }} 
         // transition={{ duration: 0.5, ease:'easeOut' }}
-        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+        transition={{ type: 'spring', stiffness: 100,damping: 15 }}
         className="relative z-10 py-4">
           <div className="border-4 border-white text-white rounded-sm p-4 flex justify-center w-fit mx-auto drop-shadow-lg backdrop-blur-xs bg-white/10">
             <h1 className="font-[family-name:var(--font-minecraft)] text-4xl">CREEPER TOOLS</h1>

@@ -132,7 +132,7 @@ export default function CraftingRecipes() {
 
   return (
     <div className='pt-12 text-white'>
-      <div className="absolute inset-0 bg-black opacity-30 z-[-1]"></div>
+      <div className="absolute inset-0 z-[-1]"></div>
       <motion.div 
       initial = {{ opacity: 0, y: 50 }}
       animate = {{ opacity: 1, y: 0 }} 
@@ -151,16 +151,16 @@ export default function CraftingRecipes() {
         </div>
         <div>
           {renderTree && (
-            <div className='justify-center text-xl mx-auto w-fit border-4 rounded-lg border-green-600 p-4 bg-green-600/30'>
+            <div className='justify-center text-xl mx-auto size-auto md:w-fit border-4 rounded-lg border-green-600 p-4 bg-green-600/30'>
               <TreeNode {...renderTree} />
               <RawMaterialsSummary {...rawMaterials}/>
             </div>
           )}
         </div>
         <div className='p-2 m-2 border-4 rounded-lg w-2/3 mx-auto justify-center drop-shadow-2xl backdrop-blur-xs bg-white/20 h-152 overflow-y-scroll text-xl'>
-          <ul className='grid grid-cols-5 gap-3'>
+          <ul className='grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-3'>
             {filteredSearch.map((item) => (
-              <li className='text-white hover:text-indigo-400 cursor-pointer' key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
+              <li className='text-white md:hover:text-indigo-400 active:text-indigo-400 cursor-pointer transition-all hover:scale-105 active:shadow-lg active:shadow-black/70 md:hover:shadow-lg md:hover:shadow-black/70 w-fit' key = {item.id} onClick={() => {setSelectedItem(item.name)}}>{item.displayName}</li>
             ))}
           </ul>
         </div>
