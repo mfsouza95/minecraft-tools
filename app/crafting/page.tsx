@@ -7,6 +7,8 @@ import recipes from '../../data/1.21.11/recipes.json';
 import RawMaterialsSummary from './components/RawMaterialsSummary';
 import { ResultObject } from '../types';
 import { ResultRaw } from '../types';
+import { HistoryEntry } from '../types'
+import Sidebar from './components/Sidebar';
 
 interface Recipe {
   inShape?: number[][];
@@ -98,7 +100,6 @@ function isRawMaterial(node: ResultObject, result:Record<string, number> = {}){
   } else {
     for (const ingredientRecipe of node.ingredients){
       isRawMaterial(ingredientRecipe, result);
-      console.log(result);
     }
   }
   return result;
@@ -110,6 +111,7 @@ export default function CraftingRecipes() {
   const [renderTree, setRenderTree] = useState<ResultObject | null>(null);
   const [rawMaterials, setRawMaterials] = useState<ResultRaw | null>(null);
   const [searchedItem, setSearchedItem] = useState('');
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const filteredSearch = filteredItemsList.filter((item) => item.displayName.toLowerCase().includes(searchedItem.toLowerCase()));
 
@@ -128,6 +130,7 @@ export default function CraftingRecipes() {
       ])
     )
     setRawMaterials(rawWithStacks);
+    setHistory(prev => [...prev, {selectedItem, quantity: blockQuantity, tree, rawMaterials: rawWithStacks}]);
   }
 
   return (
@@ -139,7 +142,7 @@ export default function CraftingRecipes() {
       // transition={{ duration: 0.5, ease:'easeOut' }}
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
       className="relative z-10 py-8">
-        <div className='text-center text-3xl font-bold font-[family-name:var(--font-minecraft)]'>
+        <div className='text-center text-3xl font-bold font-(family-name:--font-minecraft)'>
           <h1>Crafting</h1>
         </div>
         <div className='p-4 m-2 justify-center text-center text-2xl'>
@@ -147,7 +150,7 @@ export default function CraftingRecipes() {
           <input type='text' id='searchInput' name='searchInput' className='bg-white text-black rounded-sm' onChange={(e) => setSearchedItem(e.target.value)}></input>
           <label htmlFor='Quantity' className='mx-4'>Quantity</label>
           <input type='number' id='blockQuantity' name='blockQuantity' className='bg-white text-black rounded-sm no-arrows' onChange={(e) => setBlockQuantity(Number(e.target.value))}></input>
-          <button className='m-2 p-2 bg-white text-black rounded-sm cursor-pointer hover:bg-gray-200 font-[family-name:var(--font-minecraft)]' onClick={handleCalculate}>Calculate</button>
+          <button className='m-2 p-2 bg-white text-black rounded-sm cursor-pointer hover:bg-gray-200 font-(family-name:--font-minecraft)' onClick={handleCalculate}>Calculate</button>
         </div>
         <div>
           {renderTree && (
@@ -165,6 +168,12 @@ export default function CraftingRecipes() {
           </ul>
         </div>
       </motion.div>
+      <Sidebar
+        history={history} onSelectEntry={(entry) => {
+          setRenderTree(entry.tree)
+          setRawMaterials(entry.rawMaterials)
+        }}
+      />
     </div>
   );
 }

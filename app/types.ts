@@ -13,3 +13,10 @@ interface RawMaterial {
 export interface ResultRaw{
     [key: string]: RawMaterial;
 }
+
+export interface HistoryEntry{
+  selectedItem: string;
+  quantity: number;
+  tree: ResultObject;
+  rawMaterials: ResultRaw;
+}
