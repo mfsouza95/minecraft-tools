@@ -173,6 +173,7 @@ export default function CraftingRecipes() {
           setRenderTree(entry.tree)
           setRawMaterials(entry.rawMaterials)
         }}
+        onClearHistory={() => setHistory([])}
       />
     </div>
   );
