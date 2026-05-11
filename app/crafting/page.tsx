@@ -169,7 +169,7 @@ export default function CraftingRecipes() {
         </div>
       </motion.div>
       <Sidebar
-        history={history} onSelectEntry={(entry) => {
+        historyEntries={history} onSelectEntry={(entry) => {
           setRenderTree(entry.tree)
           setRawMaterials(entry.rawMaterials)
         }}

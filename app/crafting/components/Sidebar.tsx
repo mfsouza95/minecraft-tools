@@ -4,24 +4,47 @@ import { HistoryEntry } from '../../types'
 import { p } from 'motion/react-client';
 
 interface SidebarProps {
-    history: HistoryEntry[];
+    historyEntries: HistoryEntry[];
     onSelectEntry: (entry: HistoryEntry) => void;
     onClearHistory: () => void;
     onClearEntry: (index: number) => void;
 };
 
-export default function Sidebar({ history, onSelectEntry, onClearHistory, onClearEntry }: SidebarProps){
+function exportHistory(historyEntries: HistoryEntry[]){
+    const result: Record<string, number> = {};
+
+    for (const entry of historyEntries){
+        for (const [name, data] of Object.entries(entry.rawMaterials)) {
+            result[name] = (result[name] ?? 0) + data.quantity;
+        }
+    };
+    return result;
+};
+
+export default function Sidebar({ historyEntries, onSelectEntry, onClearHistory, onClearEntry }: SidebarProps){
     const [sidebarState, setSidebarState] = useState(true);
+
+    const handleExport = (historyEntries: HistoryEntry[]) => {
+        const result = exportHistory(historyEntries);
+        const json = JSON.stringify(result, null, 2);
+        const blob = new Blob([json], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'materials.json';
+        a.click()
+        URL.revokeObjectURL(url);
+    }   
 
     const backButton = sidebarState ? '<' : '>';
 
     const toggleSidebar = () => setSidebarState(!sidebarState);
     
     useEffect(() => {
-        if(history.length > 0){
+        if(historyEntries.length > 0){
             setSidebarState(false)
         }
-    }, [history]);
+    }, [historyEntries]);
 
     return(
         <div>
@@ -33,7 +56,7 @@ export default function Sidebar({ history, onSelectEntry, onClearHistory, onClea
                     <h1 className={`text-center font-bold text-3xl pb-4 col-span-4 col-start-2 ${sidebarState? 'invisible' : 'visible' }`}>History:</h1>
                 </div>
                 <ul>
-                    {history.map((item, index) => (
+                    {historyEntries.map((item, index) => (
                         <li className= {`relative cursor-pointer p-3 border-b border-gray-300 transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-50 ${sidebarState? 'invisible' : 'visible' }`} key={index} onClick={() => onSelectEntry(item)}>
                             <p className='font-bold'>{item.selectedItem}: {item.quantity}</p>
                             {Object.entries(item.rawMaterials).map(([name, data]) => (
@@ -52,7 +75,9 @@ export default function Sidebar({ history, onSelectEntry, onClearHistory, onClea
                     <input type="button" value="Clear History" className='border-2 border-black cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'
                     onClick={onClearHistory}
                     />
-                    <input type="button" value="Export Raw Materials" className='border-2 border-black cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'/>
+                    <input type="button" value="Export Raw Materials" className='border-2 border-black cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'
+                    onClick={() => handleExport(historyEntries)}
+                    />
                 </div>
             </aside>
         </div>
