@@ -5,20 +5,15 @@ import { p } from 'motion/react-client';
 
 interface SidebarProps {
     history: HistoryEntry[];
-    onSelectEntry: (entry: HistoryEntry) => void
-    onClearHistory: () => void
+    onSelectEntry: (entry: HistoryEntry) => void;
+    onClearHistory: () => void;
+    onClearEntry: (index: number) => void;
 };
 
-let backButton: string = ''
-
-export default function Sidebar({ history, onSelectEntry, onClearHistory }: SidebarProps){
+export default function Sidebar({ history, onSelectEntry, onClearHistory, onClearEntry }: SidebarProps){
     const [sidebarState, setSidebarState] = useState(true);
 
-    if (!sidebarState){
-        backButton = '>'
-    } else {
-        backButton = '<'
-    }
+    const backButton = sidebarState ? '<' : '>';
 
     const toggleSidebar = () => setSidebarState(!sidebarState);
     
@@ -39,11 +34,17 @@ export default function Sidebar({ history, onSelectEntry, onClearHistory }: Side
                 </div>
                 <ul>
                     {history.map((item, index) => (
-                        <li className= {`cursor-pointer p-3 border-b border-gray-300 transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-50 ${sidebarState? 'invisible' : 'visible' }`} key={index} onClick={() => onSelectEntry(item)}>
+                        <li className= {`relative cursor-pointer p-3 border-b border-gray-300 transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-50 ${sidebarState? 'invisible' : 'visible' }`} key={index} onClick={() => onSelectEntry(item)}>
                             <p className='font-bold'>{item.selectedItem}: {item.quantity}</p>
                             {Object.entries(item.rawMaterials).map(([name, data]) => (
                                 <p key={name} className='pl-4'>{name}: {data.quantity}</p>
                             ))}
+                            <input type="button" value="🗑️" className='absolute top-px right-px rounded-lg flex items-center justify-center cursor-pointer text-lg'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClearEntry(index);
+                            }}
+                            />
                         </li>
                     ))}
                 </ul>
@@ -51,7 +52,7 @@ export default function Sidebar({ history, onSelectEntry, onClearHistory }: Side
                     <input type="button" value="Clear History" className='border-2 border-black cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'
                     onClick={onClearHistory}
                     />
-                    <input type="button" value="Export Raw Materials" className='border-2 border-black  cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'/>
+                    <input type="button" value="Export Raw Materials" className='border-2 border-black cursor-pointer rounded-lg transition-all hover:scale-105 hover:shadow-md hover:shadow-black/20 hover:bg-gray-200'/>
                 </div>
             </aside>
         </div>

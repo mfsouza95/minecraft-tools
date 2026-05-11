@@ -174,6 +174,9 @@ export default function CraftingRecipes() {
           setRawMaterials(entry.rawMaterials)
         }}
         onClearHistory={() => setHistory([])}
+        onClearEntry={(i) => {
+          setHistory((prev) => prev.filter((_, index) => index !== i))
+        }}
       />
     </div>
   );
