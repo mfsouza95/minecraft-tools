@@ -40,7 +40,7 @@ export default function PortalCalc() {
         transition={{ type: 'spring', stiffness: 100, damping: 15 }}
         className="relative z-10 py-4 text-center"
       >
-        <h1 className='font-bold text-3xl font-[family-name:var(--font-minecraft)]'>Coords Calculations</h1>
+        <h1 className='font-bold text-3xl font-(family-name:--font-minecraft)'>Coords Calculations</h1>
         <div className='border-4 rounded-lg drop-shadow-lg backdrop-blur-xs bg-white/20 my-6 py-6 px-6 w-fit mx-auto'>
           <div className='my-8 font-semibold'>
             <h2>Choose your current dimension: </h2>
